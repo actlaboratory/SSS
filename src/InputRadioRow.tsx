@@ -1,5 +1,5 @@
-import { Button, Row, Col } from 'react-bootstrap';
-import React, { useState } from 'react';
+import { Row, Col } from 'react-bootstrap';
+import React from 'react';
 
 type props = {
   name : string,
@@ -10,7 +10,7 @@ type props = {
   onChange : (e: React.ChangeEvent<HTMLInputElement>) => void,
 }
 
-function ImputRadioRow(props: props) {
+function InputRadioRow(props: props) {
   return (
     <Row>
       <Col xs="12" md="3">{props.title}</Col>
@@ -22,7 +22,7 @@ function ImputRadioRow(props: props) {
                 name={props.name}
                 id = {props.name + "_" + v}
                 value={v}
-                checked={v == props.selected}
+                checked={""+v === props.selected}
                 onChange={props.onChange}
               />
               <label htmlFor={props.name + "_" + v}>{k}</label>
@@ -34,4 +34,4 @@ function ImputRadioRow(props: props) {
   );
 }
 
-export default ImputRadioRow;
+export default InputRadioRow;

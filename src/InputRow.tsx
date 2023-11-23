@@ -1,5 +1,5 @@
-import { Button, Row, Col } from 'react-bootstrap';
-import React, { useState } from 'react';
+import { Row, Col } from 'react-bootstrap';
+import React from 'react';
 
 type props = {
   type : string,
@@ -11,7 +11,7 @@ type props = {
   onChange : (e: React.ChangeEvent<HTMLInputElement>) => void,
 }
 
-function ImputRow(props: props) {
+function InputRow(props: props) {
   return (
     <Row>
       <Col xs="12" md="3"><label htmlFor={props.id}>{props.name}</label></Col>
@@ -30,4 +30,4 @@ function ImputRow(props: props) {
   );
 }
 
-export default ImputRow;
+export default InputRow;
