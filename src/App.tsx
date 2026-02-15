@@ -27,6 +27,7 @@ type param = {
     koujo: number,
     dokushin_type: number,
     gakusei_type: number,
+    shotoku_chousei_type: number,
 }
 
 const App: React.FC = () => {
@@ -54,6 +55,7 @@ const App: React.FC = () => {
         koujo: 0,
         dokushin_type: 0,
         gakusei_type: 0,
+        shotoku_chousei_type: 0,
     });
 
     function calcKyuuyoshotokuKoujo(v: number): number {
@@ -78,8 +80,19 @@ const App: React.FC = () => {
         return Math.round(v * (0.0915 + 0.04925 + 0.00115 + 0.005 + (kaigo ? 0.0081 : 0)))
     }
 
-    const kyuuyo_shotoku_koujo = calcKyuuyoshotokuKoujo(params["kyuuyo_shuunyuu"] + params["shahogai_kyuuyo"])
-    const kyuuyo_shotoku = params["kyuuyo_shuunyuu"] + params["shahogai_kyuuyo"] - kyuuyo_shotoku_koujo
+    const kyuuyo_shuunyuu_total = params["kyuuyo_shuunyuu"] + params["shahogai_kyuuyo"]
+    const kyuuyo_shotoku_koujo = calcKyuuyoshotokuKoujo(kyuuyo_shuunyuu_total)
+
+    // 子ども・特別障害者等を有する者等の所得金額調整控除
+    const canAutoJudgeChousei = (params["jakunen_fuyou_shinzoku"] + params["seinen_fuyou_shinzoku"] + params["tokutei_fuyou_shinzoku"] > 0)
+        || (params["doukyo_tokubetsu_shougai"] + params["tokubetsu_shougai"] > 0)
+    const isChouseiTarget = kyuuyo_shuunyuu_total > 8500000
+        && (canAutoJudgeChousei || params["shotoku_chousei_type"] === 1)
+    const shotoku_chousei_koujo = isChouseiTarget
+        ? Math.ceil((Math.min(kyuuyo_shuunyuu_total, 10000000) - 8500000) * 0.1)
+        : 0
+
+    const kyuuyo_shotoku = kyuuyo_shuunyuu_total - kyuuyo_shotoku_koujo - shotoku_chousei_koujo
     const shotoku = kyuuyo_shotoku + params["sonota_shotoku"]
     const shaho = params["shaho_type"] === 2
         ? params["shaho_manual"]
@@ -414,6 +427,25 @@ const App: React.FC = () => {
                 }}
             />
 
+            {kyuuyo_shuunyuu_total > 8500000 && !canAutoJudgeChousei && (
+                <InputRadioRow
+                    title="子ども・特別障害者等を有する者等の所得金額調整控除"
+                    name="shotoku_chousei_type"
+                    values={{
+                        "対象外": "0",
+                        "対象": "1"
+                    }}
+                    selected={"" + params["shotoku_chousei_type"]}
+                    description="給与収入が850万円を超える場合で、本人が特別障害者であるか、特別障害者である同一生計配偶者もしくは扶養親族がいる場合に対象(23歳未満の扶養親族がいる場合や特別障害者である扶養親族がいる場合は自動で適用されます)"
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                        setParams({
+                            ...params,
+                            "shotoku_chousei_type": Number(e.target.value)
+                        })
+                    }}
+                />
+            )}
+
             {/*
                   <InputRow
                     id=""
@@ -467,8 +499,8 @@ const App: React.FC = () => {
                     <td>A</td>
                     <td>給与所得</td>
                     <td>{kyuuyo_shotoku.toLocaleString()}</td>
-                    <td>給与所得控除額：{kyuuyo_shotoku_koujo.toLocaleString()}円</td>
-                    <td>①課税給与収入と④社保適用外の勤務先から受ける課税給与収入から、それらを基に国が定めた算式で計算した給与所得控除額を差し引いた金額</td>
+                    <td>給与所得控除額：{kyuuyo_shotoku_koujo.toLocaleString()}円{shotoku_chousei_koujo > 0 && "、所得金額調整控除額：" + shotoku_chousei_koujo.toLocaleString() + "円"}</td>
+                    <td>①課税給与収入と④社保適用外の勤務先から受ける課税給与収入から、それらを基に国が定めた算式で計算した給与所得控除額{shotoku_chousei_koujo > 0 && "と所得金額調整控除額"}を差し引いた金額</td>
                 </tr>
                 <tr>
                     <td>B</td>
