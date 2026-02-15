@@ -444,8 +444,15 @@ const App: React.FC = () => {
             </div>
 
             <Table striped bordered hover
-                   style={{captionSide: "top"}}>
+                   style={{captionSide: "top", tableLayout: "fixed"}}>
                 <caption>収入</caption>
+                <colgroup>
+                    <col style={{width: "3%"}} />
+                    <col style={{width: "15%"}} />
+                    <col style={{width: "12%"}} />
+                    <col style={{width: "20%"}} />
+                    <col style={{width: "50%"}} />
+                </colgroup>
                 <thead>
                 <tr>
                     <th></th>
@@ -481,8 +488,15 @@ const App: React.FC = () => {
             </Table>
 
             <Table striped bordered hover
-                   style={{captionSide: "top"}}>
+                   style={{captionSide: "top", tableLayout: "fixed"}}>
                 <caption>控除</caption>
+                <colgroup>
+                    <col style={{width: "3%"}} />
+                    <col style={{width: "15%"}} />
+                    <col style={{width: "12%"}} />
+                    <col style={{width: "20%"}} />
+                    <col style={{width: "50%"}} />
+                </colgroup>
                 <thead>
                 <tr>
                     <th></th>
@@ -540,13 +554,21 @@ const App: React.FC = () => {
             </Table>
 
             <Table striped bordered hover
-                   style={{captionSide: "top"}}>
+                   style={{captionSide: "top", tableLayout: "fixed"}}>
                 <caption>差引</caption>
+                <colgroup>
+                    <col style={{width: "3%"}} />
+                    <col style={{width: "15%"}} />
+                    <col style={{width: "12%"}} />
+                    <col style={{width: "20%"}} />
+                    <col style={{width: "50%"}} />
+                </colgroup>
                 <thead>
                 <tr>
                     <th></th>
                     <th>項目</th>
                     <th>金額</th>
+                    <th></th>
                     <th>説明</th>
                 </tr>
                 </thead>
@@ -555,19 +577,28 @@ const App: React.FC = () => {
                     <td>J</td>
                     <td>判定対象金額</td>
                     <td>{(shotoku - koujo).toLocaleString()}</td>
+                    <td></td>
                     <td>C－I</td>
                 </tr>
                 </tbody>
             </Table>
 
             <Table striped bordered hover
-                   style={{captionSide: "top"}}>
+                   style={{captionSide: "top", tableLayout: "fixed"}}>
                 <caption>基準額</caption>
+                <colgroup>
+                    <col style={{width: "3%"}} />
+                    <col style={{width: "15%"}} />
+                    <col style={{width: "12%"}} />
+                    <col style={{width: "20%"}} />
+                    <col style={{width: "50%"}} />
+                </colgroup>
                 <thead>
                 <tr>
                     <th></th>
                     <th>項目</th>
                     <th>金額</th>
+                    <th></th>
                     <th>説明</th>
                 </tr>
                 </thead>
@@ -576,12 +607,14 @@ const App: React.FC = () => {
                     <td>K</td>
                     <td>半額支給停止の基準額</td>
                     <td>{(3761000 + kasan).toLocaleString()}</td>
+                    <td></td>
                     <td>3,761,000円+(⑦16歳未満の扶養親族の人数+⑧16～18歳の扶養親族の人数+⑨特定扶養親族の人数)×630,000+(⑩老人扶養親族(同居老親等以外)の人数+⑪老人扶養親族(同居老親等)の人数)×480,000円+⑫一般の扶養親族の人数×380,000円に、⑥配偶者の状況が一般の控除対象であれば380,000円、老人控除対象であれば480,000円を加算した金額</td>
                 </tr>
                 <tr>
                     <td>L</td>
                     <td>全額支給停止の基準額</td>
                     <td>{(4794000 + kasan).toLocaleString()}</td>
+                    <td></td>
                     <td>4,794,000円+上段と同じ加算額</td>
                 </tr>
                 </tbody>
