@@ -55,13 +55,15 @@ const App: React.FC = () => {
     function calcKyuuyoshotokuKoujo(v: number): number {
         if (v <= 650000) {
             return v
-        } else if (v <= 1900000) {
+        } else if (v < 1900000) {
             return 650000
-        } else if (v <= 3600000) {
-            return Math.round(v * 0.3 + 80000)
-        } else if (v <= 6600000) {
-            return Math.round(v * 0.2 + 440000)
-        } else if (v <= 8500000) {
+        } else if (v < 3600000) {
+            const b = Math.floor(v / 4000)
+            return v - (b * 2800 - 80000)
+        } else if (v < 6600000) {
+            const b = Math.floor(v / 4000)
+            return v - (b * 3200 - 440000)
+        } else if (v < 8500000) {
             return Math.round(v * 0.1 + 1100000)
         } else {
             return 1950000
