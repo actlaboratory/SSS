@@ -344,6 +344,7 @@ const App: React.FC = () => {
                 id="doukyo_tokubetsu_shougai"
                 name="⑬　同居特別障害者控除の対象者数"
                 type="number"
+                min={0}
                 description="合計所得金額58万円以下の配偶者または扶養親族の内、本人・配偶者・生計を一にする親族のいずれかとの同居を常としている特別障害者の人数(20歳前傷病にかかる障害基礎年金の受給者を除く)"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setParams({
@@ -357,6 +358,7 @@ const App: React.FC = () => {
                 id="tokubetsu_shougai"
                 name="⑭　特別障害者控除の対象者数"
                 type="number"
+                min={0}
                 description="合計所得金額58万円以下の配偶者または扶養親族と本人の内、介護保険の要介護３以上の方の一部、身体障害2級鵜以上、知的障害重度、精神障害1級等の人の人数(⑬と、20歳前傷病にかかる障害基礎年金の受給者を除く)"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setParams({
@@ -370,6 +372,7 @@ const App: React.FC = () => {
                 id="shougai"
                 name="⑮　障害者控除の対象者数"
                 type="number"
+                min={0}
                 description="合計所得金額58万円以下の配偶者または扶養親族と本人の内、介護保険の要支援２以上の方の一部、身体・知的・精神障害者等の人数(⑬・⑭と20歳前傷病にかかる障害基礎年金の受給者を除く)"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setParams({
