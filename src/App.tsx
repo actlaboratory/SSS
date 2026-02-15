@@ -53,82 +53,30 @@ const App: React.FC = () => {
     });
 
     function calcKyuuyoshotokuKoujo(v: number): number {
-        if (v <= 550000) {
+        if (v <= 650000) {
             return v
+        } else if (v <= 1900000) {
+            return 650000
+        } else if (v <= 3600000) {
+            return Math.round(v * 0.3 + 80000)
+        } else if (v <= 6600000) {
+            return Math.round(v * 0.2 + 440000)
+        } else if (v <= 8500000) {
+            return Math.round(v * 0.1 + 1100000)
+        } else {
+            return 1950000
         }
-
-        let result = 0
-
-        result += Math.min(8500000, v) * 0.1
-        result += Math.min(6600000, v) * 0.1
-        result += Math.min(3600000, v) * 0.1
-        result += Math.min(1800000, v) * 0.1
-
-        return Math.round(Math.max(550000, result - 100000))
     }
 
     function calcShaho(v: number): number {
-        return Math.round(v * (0.0915 + 0.0500 + 0.006))
+        return Math.round(v * (0.0915 + 0.04925 + 0.00115 + 0.005))
     }
 
     const kyuuyo_shotoku_koujo = calcKyuuyoshotokuKoujo(params["kyuuyo_shuunyuu"] + params["shahogai_kyuuyo"])
     const kyuuyo_shotoku = params["kyuuyo_shuunyuu"] + params["shahogai_kyuuyo"] - kyuuyo_shotoku_koujo
     const shotoku = kyuuyo_shotoku + params["sonota_shotoku"]
     const shaho = calcShaho(params["kyuuyo_shuunyuu"] - params["kyuuyo_shuunyuu_shaho_fusannyuu"] + params["shahonomi_shuunyuu"])
-    let haiguusha_tokubetsu_koujo = 0;
-    switch (params["haiguusha_type"]) {
-        case 4:
-            haiguusha_tokubetsu_koujo = 330000;
-            break;
-        case 5:
-            haiguusha_tokubetsu_koujo = 310000;
-            break;
-        case 6:
-            haiguusha_tokubetsu_koujo = 260000;
-            break;
-        case 7:
-            haiguusha_tokubetsu_koujo = 220000;
-            break;
-        case 8:
-            haiguusha_tokubetsu_koujo = 210000;
-            break;
-        case 9:
-            haiguusha_tokubetsu_koujo = 180000;
-            break;
-        case 10:
-            haiguusha_tokubetsu_koujo = 160000;
-            break;
-        case 11:
-            haiguusha_tokubetsu_koujo = 140000;
-            break;
-        case 12:
-            haiguusha_tokubetsu_koujo = 110000;
-            break;
-        case 13:
-            haiguusha_tokubetsu_koujo = 90000;
-            break;
-        case 14:
-            haiguusha_tokubetsu_koujo = 80000;
-            break;
-        case 15:
-            haiguusha_tokubetsu_koujo = 70000;
-            break;
-        case 16:
-            haiguusha_tokubetsu_koujo = 60000;
-            break;
-        case 17:
-            haiguusha_tokubetsu_koujo = 40000;
-            break;
-        case 18:
-            haiguusha_tokubetsu_koujo = 30000;
-            break;
-        case 19:
-            haiguusha_tokubetsu_koujo = 20000;
-            break;
-        case 20:
-            haiguusha_tokubetsu_koujo = 10000;
-            break;
-    }
+    const haiguusha_tokubetsu_koujo = params["haiguusha_type"] > 0 ? params["haiguusha_type"] * 10000 : 0;
 
     const shougaisha_koujo = (params["doukyo_tokubetsu_shougai"] + params["tokubetsu_shougai"]) * 400000 + params["shougai"] * 270000;
 
@@ -147,11 +95,11 @@ const App: React.FC = () => {
     }
     const koujo = shaho + haiguusha_tokubetsu_koujo + shougaisha_koujo + kojin_koujo + params["koujo"];
 
-    const kasan = (params["jakunen_fuyou_shinzoku"] + params["seinen_fuyou_shinzoku"] + params["tokutei_fuyou_shinzoku"]) * 650000 +
+    const kasan = (params["jakunen_fuyou_shinzoku"] + params["seinen_fuyou_shinzoku"] + params["tokutei_fuyou_shinzoku"]) * 630000 +
         (params["roujin_fuyou_shinzoku"] + params["doukyo_roujin"]) * 480000 +
         params["fuyou_shinzoku"] * 380000 +
-        (params["haiguusha_type"] == 2 ? 380000 : 0) +
-        (params["haiguusha_type"] == 3 ? 650000 : 0);
+        (params["haiguusha_type"] == -2 ? 380000 : 0) +
+        (params["haiguusha_type"] == -3 ? 480000 : 0);
 
     return (
         <>
@@ -256,7 +204,7 @@ const App: React.FC = () => {
                     "特別控除1万円": "1"
                 }}
                 selected={"" + params["haiguusha_type"]}
-                description="生計を一にする等の要件を満たして控除対象とする配偶者の有無と区分を、合計所得金額48万円以下の場合は70歳以上か未満かに応じた一般・老人の別、合計所得金額が48万円超133万円以下の場合は自身と配偶者の収入に応じた配偶者特別控除額の中から選択"
+                description="生計を一にする等の要件を満たして控除対象とする配偶者の有無と区分を、合計所得金額58万円以下の場合は70歳以上か未満かに応じた一般・老人の別、合計所得金額が58万円超143万円以下の場合は自身と配偶者の収入に応じた配偶者特別控除額の中から選択"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setParams({...params, "haiguusha_type": Number(e.target.value)})
                 }}
@@ -267,7 +215,7 @@ const App: React.FC = () => {
                 name="⑦　16歳未満の扶養親族の人数"
                 type="number"
                 min={0}
-                description="合計所得金額48万円以下、同一生計等の要件を満たし、扶養親族としている人のうち、年末時点で16歳未満の人の人数"
+                description="合計所得金額58万円以下、同一生計等の要件を満たし、扶養親族としている人のうち、年末時点で16歳未満の人の人数"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setParams({...params, "jakunen_fuyou_shinzoku": Number(e.target.value)})
                 }}
@@ -278,7 +226,7 @@ const App: React.FC = () => {
                 name="⑧　16～18歳の扶養親族の人数"
                 type="number"
                 min={0}
-                description="合計所得金額48万円以下、同一生計等の要件を満たし、扶養親族としている人の内、年末時点で16～18歳の人の人数"
+                description="合計所得金額58万円以下、同一生計等の要件を満たし、扶養親族としている人の内、年末時点で16～18歳の人の人数"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setParams({...params, "seinen_fuyou_shinzoku": Number(e.target.value)})
                 }}
@@ -289,7 +237,7 @@ const App: React.FC = () => {
                 name="⑨　特定扶養親族の人数"
                 type="number"
                 min={0}
-                description="合計所得金額48万円以下、同一生計等の要件を満たし、扶養親族としている人の内、年末時点で19～22歳の人の人数"
+                description="合計所得金額58万円以下、同一生計等の要件を満たし、扶養親族としている人の内、年末時点で19～22歳の人の人数"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setParams({
                         ...params,
@@ -303,7 +251,7 @@ const App: React.FC = () => {
                 name="⑩　老人扶養親族(同居老親等以外)の人数"
                 type="number"
                 min={0}
-                description="合計所得金額48万円以下、同一生計等の要件を満たし、扶養親族としている人の内、年末時点で70歳以上かつ同居老親等の要件を満たさない人の人数"
+                description="合計所得金額58万円以下、同一生計等の要件を満たし、扶養親族としている人の内、年末時点で70歳以上かつ同居老親等の要件を満たさない人の人数"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setParams({
                         ...params,
@@ -317,7 +265,7 @@ const App: React.FC = () => {
                 name="⑪　老人扶養親族(同居老親等)の人数"
                 type="number"
                 min={0}
-                description="合計所得金額48万円以下、同一生計等の要件を満たし、扶養親族としている人の内、年末時点で70歳以上かつ同居老親等の要件を満たす人の人数"
+                description="合計所得金額58万円以下、同一生計等の要件を満たし、扶養親族としている人の内、年末時点で70歳以上かつ同居老親等の要件を満たす人の人数"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setParams({
                         ...params,
@@ -331,7 +279,7 @@ const App: React.FC = () => {
                 name="⑫　一般の扶養親族の人数"
                 type="number"
                 min={0}
-                description="合計所得金額48万円以下、同一生計等の要件を満たし、扶養親族としている人の人数のうち、⑦・⑧・⑨・⑩・⑪を除く人数"
+                description="合計所得金額58万円以下、同一生計等の要件を満たし、扶養親族としている人の人数のうち、⑦・⑧・⑨・⑩・⑪を除く人数"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setParams({
                         ...params,
@@ -344,7 +292,7 @@ const App: React.FC = () => {
                 id="doukyo_tokubetsu_shougai"
                 name="⑬　同居特別障害者控除の対象者数"
                 type="number"
-                description="合計所得金額48万円以下の配偶者または扶養親族の内、本人・配偶者・生計を一にする親族のいずれかとの同居を常としている特別障害者の人数(20歳前傷病にかかる障害基礎年金の受給者を除く)"
+                description="合計所得金額58万円以下の配偶者または扶養親族の内、本人・配偶者・生計を一にする親族のいずれかとの同居を常としている特別障害者の人数(20歳前傷病にかかる障害基礎年金の受給者を除く)"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setParams({
                         ...params,
@@ -357,7 +305,7 @@ const App: React.FC = () => {
                 id="tokubetsu_shougai"
                 name="⑭　特別障害者控除の対象者数"
                 type="number"
-                description="合計所得金額48万円以下の配偶者または扶養親族と本人の内、介護保険の要介護３以上の方の一部、身体障害2級鵜以上、知的障害重度、精神障害1級等の人の人数(⑬と、20歳前傷病にかかる障害基礎年金の受給者を除く)"
+                description="合計所得金額58万円以下の配偶者または扶養親族と本人の内、介護保険の要介護３以上の方の一部、身体障害2級鵜以上、知的障害重度、精神障害1級等の人の人数(⑬と、20歳前傷病にかかる障害基礎年金の受給者を除く)"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setParams({
                         ...params,
@@ -370,7 +318,7 @@ const App: React.FC = () => {
                 id="shougai"
                 name="⑮　障害者控除の対象者数"
                 type="number"
-                description="合計所得金額48万円以下の配偶者または扶養親族と本人の内、介護保険の要支援２以上の方の一部、身体・知的・精神障害者等の人数(⑬・⑭と20歳前傷病にかかる障害基礎年金の受給者を除く)"
+                description="合計所得金額58万円以下の配偶者または扶養親族と本人の内、介護保険の要支援２以上の方の一部、身体・知的・精神障害者等の人数(⑬・⑭と20歳前傷病にかかる障害基礎年金の受給者を除く)"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setParams({
                         ...params,
@@ -381,9 +329,9 @@ const App: React.FC = () => {
 
             <InputRow
                 id="koujo"
-                name="⑯　雑損・医療費・小規模企業共済等掛金・給与天引き以外で支払った社会保険料の控除額"
+                name="⑯　雑損・医療費・小規模企業共済等掛金・給与天引き以外で支払った社会保険料・特定親族特別控除の控除額"
                 type="number"
-                description="被災や盗難・横領被害などによる雑損控除、医療費控除、小規模企業共済・確定拠出年金・心身障害者扶養共済の掛金を支払った場合の小規模企業共済等掛金控除、給与天引き以外で支払った社会保険料の控除額の合計"
+                description="被災や盗難・横領被害などによる雑損控除、医療費控除、小規模企業共済・確定拠出年金・心身障害者扶養共済の掛金を支払った場合の小規模企業共済等掛金控除、給与天引き以外で支払った社会保険料の控除額、19～22歳の親族の合計所得金額が58万円超123万円以下の場合の特定親族特別控除(住民税の控除額：45万～3万円)の合計"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setParams({
                         ...params,
@@ -401,7 +349,7 @@ const App: React.FC = () => {
                     "寡婦控除対象": "2"
                 }}
                 selected={"" + params["dokushin_type"]}
-                description="ひとり親控除は、他の人の同一生計配偶者や扶養親族になっていない総所得金額等が48万円以下の子と生計を一にし、婚姻をしていないか配偶者の生死が不明な状態にあり、合計所得金額が500万円以下の人、寡婦控除は、離婚・配偶者の死別のあと婚姻をしておらず、扶養親族がいる等の条件を満たす合計所得金額500万円以下の女性(ひとり親控除対象者除く)"
+                description="ひとり親控除は、他の人の同一生計配偶者や扶養親族になっていない総所得金額等が58万円以下の子と生計を一にし、婚姻をしていないか配偶者の生死が不明な状態にあり、合計所得金額が500万円以下の人、寡婦控除は、離婚・配偶者の死別のあと婚姻をしておらず、扶養親族がいる等の条件を満たす合計所得金額500万円以下の女性(ひとり親控除対象者除く)"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setParams({
                         ...params,
@@ -418,7 +366,7 @@ const App: React.FC = () => {
                     "勤労学生控除対象": "1"
                 }}
                 selected={"" + params["gakusei_type"]}
-                description="本人の合計所得金額が75万円以下で給与などの勤労による所得があり、かつ勤労に基づく所得以外の所得が10万円以下で、条件を満たす学校の学生・生徒"
+                description="本人の合計所得金額が85万円以下で給与などの勤労による所得があり、かつ勤労に基づく所得以外の所得が20万円以下で、条件を満たす学校の学生・生徒"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setParams({
                         ...params,
@@ -511,7 +459,7 @@ const App: React.FC = () => {
                     <td>社会保険料控除(給与天引き分)</td>
                     <td>{shaho.toLocaleString()}</td>
                     <th></th>
-                    <th>①課税給与収入－②社保不算入の額＋③社保のみ算入の非課税報酬額に、厚生年金・健康保険(東京都の協会健保の保険料率)・雇用保険(一般の事業)の従業員負担分の保険料率をかけた金額</th>
+                    <th>①課税給与収入－②社保不算入の額＋③社保のみ算入の非課税報酬額に、厚生年金・健康保険(東京都の協会健保の保険料率)・子ども・子育て支援金・雇用保険(一般の事業)の従業員負担分の保険料率をかけた金額</th>
                 </tr>
                 <tr>
                     <td>E</td>
@@ -534,7 +482,7 @@ const App: React.FC = () => {
                 </tr>
                 <tr>
                     <td>H</td>
-                    <td>雑損・医療費・小規模企業共済等掛金・社会保険料(給与天引き以外)控除</td>
+                    <td>雑損・医療費・小規模企業共済等掛金・社会保険料(給与天引き以外)・特定親族特別控除</td>
                     <td>{params["koujo"].toLocaleString()}</td>
                     <td></td>
                     <td>⑯の金額</td>
@@ -564,14 +512,14 @@ const App: React.FC = () => {
                 <tr>
                     <td>J</td>
                     <td>半額支給停止の基準額</td>
-                    <td>{(3704000 + kasan).toLocaleString()}</td>
-                    <td>3,704,000円+(⑦16歳未満の扶養親族の人数+⑧16～18歳の扶養親族の人数+⑨特定扶養親族の人数)×630,000+(⑩老人扶養親族(同居老親等以外)の人数+⑪老人扶養親族(同居老親等)の人数)×480,000円+⑫一般の扶養親族の人数×380,000円に、⑥配偶者の状況が一般の控除対象であれば380,000円、老人控除対象であれば480,000円を加算した金額</td>
+                    <td>{(3761000 + kasan).toLocaleString()}</td>
+                    <td>3,761,000円+(⑦16歳未満の扶養親族の人数+⑧16～18歳の扶養親族の人数+⑨特定扶養親族の人数)×630,000+(⑩老人扶養親族(同居老親等以外)の人数+⑪老人扶養親族(同居老親等)の人数)×480,000円+⑫一般の扶養親族の人数×380,000円に、⑥配偶者の状況が一般の控除対象であれば380,000円、老人控除対象であれば480,000円を加算した金額</td>
                 </tr>
                 <tr>
                     <td>K</td>
                     <td>全額支給停止の基準額</td>
-                    <td>{(4721000 + kasan).toLocaleString()}</td>
-                    <td>4,721,000円+上段と同じ加算額</td>
+                    <td>{(4794000 + kasan).toLocaleString()}</td>
+                    <td>4,794,000円+上段と同じ加算額</td>
                 </tr>
                 </tbody>
             </Table>
@@ -579,12 +527,12 @@ const App: React.FC = () => {
             <div >
                 {/* @ts-ignore */}
                 <p align={"center"} className={"h3 md-3"}>判定結果：{
-                    (shotoku - koujo) > (4721000 + kasan)
-                        ? "全額支給停止(超過額：" + ((shotoku - koujo) - (4721000 + kasan)).toLocaleString() + "円"
+                    (shotoku - koujo) > (4794000 + kasan)
+                        ? "全額支給停止(超過額：" + ((shotoku - koujo) - (4794000 + kasan)).toLocaleString() + "円"
                         : (
-                            (shotoku - koujo) > (3704000 + kasan)
-                                ? "半額支給停止(超過額：" + ((shotoku - koujo) - (3704000 + kasan)).toLocaleString() + "円、全額支給停止まで:" + ((4721000 + kasan) - (shotoku - koujo)).toLocaleString() + "円)"
-                                : "支給停止なし(半額支給停止まで：" + ((3704000 + kasan) - (shotoku - koujo)).toLocaleString() + "円)"
+                            (shotoku - koujo) > (3761000 + kasan)
+                                ? "半額支給停止(超過額：" + ((shotoku - koujo) - (3761000 + kasan)).toLocaleString() + "円、全額支給停止まで:" + ((4794000 + kasan) - (shotoku - koujo)).toLocaleString() + "円)"
+                                : "支給停止なし(半額支給停止まで：" + ((3761000 + kasan) - (shotoku - koujo)).toLocaleString() + "円)"
                         )
                 }
                 </p>
