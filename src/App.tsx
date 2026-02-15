@@ -200,7 +200,7 @@ const App: React.FC = () => {
                     name="社会保険料(手動入力)"
                     type="number"
                     min={0}
-                    description="給与天引きされている社会保険料(厚生年金・健康保険・介護保険・雇用保険・子ども子育て支援金等)の年額を入力"
+                    description="給与天引きされている社会保険料(厚生年金・健康保険・介護保険・雇用保険・子ども・子育て支援金等)の年額を入力"
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                         setParams({...params, "shaho_manual": Number(e.target.value)})
                     }}
@@ -359,7 +359,7 @@ const App: React.FC = () => {
                 name="⑭　特別障害者控除の対象者数"
                 type="number"
                 min={0}
-                description="合計所得金額58万円以下の配偶者または扶養親族と本人の内、介護保険の要介護３以上の方の一部、身体障害2級鵜以上、知的障害重度、精神障害1級等の人の人数(⑬と、20歳前傷病にかかる障害基礎年金の受給者を除く)"
+                description="合計所得金額58万円以下の配偶者または扶養親族と本人の内、介護保険の要介護３以上の方の一部、身体障害2級以上、知的障害重度、精神障害1級等の人の人数(⑬と、20歳前傷病にかかる障害基礎年金の受給者を除く)"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setParams({
                         ...params,
@@ -404,7 +404,7 @@ const App: React.FC = () => {
                     "寡婦控除対象": "2"
                 }}
                 selected={"" + params["dokushin_type"]}
-                description="ひとり親控除は、他の人の同一生計配偶者や扶養親族になっていない総所得金額等が58万円以下の子と生計を一にし、婚姻をしていないか配偶者の生死が不明な状態にあり、合計所得金額が500万円以下の人、寡婦控除は、離婚・配偶者の死別のあと婚姻をしておらず、扶養親族がいる等の条件を満たす合計所得金額500万円以下の女性(ひとり親控除対象者除く)"
+                description="ひとり親控除は、他の人の同一生計配偶者や扶養親族になっていない総所得金額等が58万円以下の子と生計を一にし、婚姻をしていないか配偶者の生死が不明な状態にあり、合計所得金額が500万円以下の人、寡婦控除は、離婚または配偶者の死別後に婚姻をしておらず、扶養親族がいる等の条件を満たす合計所得金額500万円以下の女性(ひとり親控除対象者除く)"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setParams({
                         ...params,
@@ -562,7 +562,7 @@ const App: React.FC = () => {
                     <td>障害者控除</td>
                     <td>{shougaisha_koujo.toLocaleString()}</td>
                     <td>{params["doukyo_tokubetsu_shougai"] + params["tokubetsu_shougai"] + params["shougai"]}人</td>
-                    <td>(⑬同居特別障害者控除の対象者数＋⑭特別障害者控除の対象者数)×400,000円＋⑮障害者控除の対象者数×270，000円</td>
+                    <td>(⑬同居特別障害者控除の対象者数＋⑭特別障害者控除の対象者数)×400,000円＋⑮障害者控除の対象者数×270,000円</td>
                 </tr>
                 <tr>
                     <td>G</td>
