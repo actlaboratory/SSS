@@ -22,6 +22,8 @@ type param = {
     tokubetsu_shougai: number,
     shougai: number,
 
+    shaho_type: number,
+    shaho_manual: number,
     koujo: number,
     dokushin_type: number,
     gakusei_type: number,
@@ -47,6 +49,8 @@ const App: React.FC = () => {
         tokubetsu_shougai: 0,
         shougai: 0,
 
+        shaho_type: 0,
+        shaho_manual: 0,
         koujo: 0,
         dokushin_type: 0,
         gakusei_type: 0,
@@ -70,14 +74,19 @@ const App: React.FC = () => {
         }
     }
 
-    function calcShaho(v: number): number {
-        return Math.round(v * (0.0915 + 0.04925 + 0.00115 + 0.005))
+    function calcShaho(v: number, kaigo: boolean): number {
+        return Math.round(v * (0.0915 + 0.04925 + 0.00115 + 0.005 + (kaigo ? 0.0081 : 0)))
     }
 
     const kyuuyo_shotoku_koujo = calcKyuuyoshotokuKoujo(params["kyuuyo_shuunyuu"] + params["shahogai_kyuuyo"])
     const kyuuyo_shotoku = params["kyuuyo_shuunyuu"] + params["shahogai_kyuuyo"] - kyuuyo_shotoku_koujo
     const shotoku = kyuuyo_shotoku + params["sonota_shotoku"]
-    const shaho = calcShaho(params["kyuuyo_shuunyuu"] - params["kyuuyo_shuunyuu_shaho_fusannyuu"] + params["shahonomi_shuunyuu"])
+    const shaho = params["shaho_type"] === 2
+        ? params["shaho_manual"]
+        : calcShaho(
+            params["kyuuyo_shuunyuu"] - params["kyuuyo_shuunyuu_shaho_fusannyuu"] + params["shahonomi_shuunyuu"],
+            params["shaho_type"] === 1
+        )
     const haiguusha_tokubetsu_koujo = params["haiguusha_type"] > 0 ? params["haiguusha_type"] * 10000 : 0;
 
     const shougaisha_koujo = (params["doukyo_tokubetsu_shougai"] + params["tokubetsu_shougai"]) * 400000 + params["shougai"] * 270000;
@@ -156,6 +165,34 @@ const App: React.FC = () => {
                     setParams({...params, "shahonomi_shuunyuu": Number(e.target.value)})
                 }}
             />
+
+            <InputRadioRow
+                title="社会保険料の計算方法"
+                name="shaho_type"
+                values={{
+                    "自動計算(介護保険なし)": "0",
+                    "自動計算(介護保険あり)": "1",
+                    "手動入力": "2"
+                }}
+                selected={"" + params["shaho_type"]}
+                description="東京都の協会けんぽの令和8年度保険料率で自動計算するか、手動で入力するかを選択(40歳以上65歳未満の方は介護保険ありを選択)"
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    setParams({...params, "shaho_type": Number(e.target.value)})
+                }}
+            />
+
+            {params["shaho_type"] === 2 && (
+                <InputRow
+                    id="shaho_manual"
+                    name="社会保険料(手動入力)"
+                    type="number"
+                    min={0}
+                    description="給与天引きされている社会保険料(厚生年金・健康保険・介護保険・雇用保険・子ども子育て支援金等)の年額を入力"
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                        setParams({...params, "shaho_manual": Number(e.target.value)})
+                    }}
+                />
+            )}
 
             <InputRow
                 id="shahogai_kyuuyo"
@@ -460,8 +497,11 @@ const App: React.FC = () => {
                     <td>D</td>
                     <td>社会保険料控除(給与天引き分)</td>
                     <td>{shaho.toLocaleString()}</td>
-                    <th></th>
-                    <th>①課税給与収入－②社保不算入の額＋③社保のみ算入の非課税報酬額に、厚生年金・健康保険(東京都の協会健保の保険料率)・子ども・子育て支援金・雇用保険(一般の事業)の従業員負担分の保険料率をかけた金額</th>
+                    <td></td>
+                    <td>{params["shaho_type"] === 2
+                        ? "手動入力された金額"
+                        : "①課税給与収入－②社保不算入の額＋③社保のみ算入の非課税報酬額に、厚生年金・健康保険(東京都の協会健保の保険料率)" + (params["shaho_type"] === 1 ? "・介護保険" : "") + "・子ども・子育て支援金・雇用保険(一般の事業)の従業員負担分の保険料率をかけた金額"
+                    }</td>
                 </tr>
                 <tr>
                     <td>E</td>
@@ -501,7 +541,7 @@ const App: React.FC = () => {
 
             <Table striped bordered hover
                    style={{captionSide: "top"}}>
-                <caption>基準額</caption>
+                <caption>差引</caption>
                 <thead>
                 <tr>
                     <th></th>
@@ -513,12 +553,33 @@ const App: React.FC = () => {
                 <tbody>
                 <tr>
                     <td>J</td>
+                    <td>判定対象金額</td>
+                    <td>{(shotoku - koujo).toLocaleString()}</td>
+                    <td>C－I</td>
+                </tr>
+                </tbody>
+            </Table>
+
+            <Table striped bordered hover
+                   style={{captionSide: "top"}}>
+                <caption>基準額</caption>
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>項目</th>
+                    <th>金額</th>
+                    <th>説明</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>K</td>
                     <td>半額支給停止の基準額</td>
                     <td>{(3761000 + kasan).toLocaleString()}</td>
                     <td>3,761,000円+(⑦16歳未満の扶養親族の人数+⑧16～18歳の扶養親族の人数+⑨特定扶養親族の人数)×630,000+(⑩老人扶養親族(同居老親等以外)の人数+⑪老人扶養親族(同居老親等)の人数)×480,000円+⑫一般の扶養親族の人数×380,000円に、⑥配偶者の状況が一般の控除対象であれば380,000円、老人控除対象であれば480,000円を加算した金額</td>
                 </tr>
                 <tr>
-                    <td>K</td>
+                    <td>L</td>
                     <td>全額支給停止の基準額</td>
                     <td>{(4794000 + kasan).toLocaleString()}</td>
                     <td>4,794,000円+上段と同じ加算額</td>
