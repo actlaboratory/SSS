@@ -15,18 +15,18 @@ function InputRadioRow(props: props) {
     <Row>
       <Col xs="12" md="3">{props.title}</Col>
       <Col xs="12" md="4">
-        {Object.keys(props.values).map((k, v) => (
-            <>
+        {Object.entries(props.values).map(([k, v]) => (
+            <React.Fragment key={v}>
               <input
                 type="radio"
                 name={props.name}
-                id = {props.name + "_" + v}
+                id={props.name + "_" + v}
                 value={v}
-                checked={""+v === props.selected}
+                checked={v === props.selected}
                 onChange={props.onChange}
               />
               <label htmlFor={props.name + "_" + v}>{k}</label>
-            </>
+            </React.Fragment>
         ))}
       </Col>
       <Col xs="12" md="5"><p>{props.description}</p></Col>
