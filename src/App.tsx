@@ -641,16 +641,16 @@ const App: React.FC = () => {
                 <tr>
                     <td>K</td>
                     <td>半額支給停止の基準額</td>
-                    <td>{(3761000 + kasan).toLocaleString()}</td>
+                    <td>{(3858000 + kasan).toLocaleString()}</td>
                     <td></td>
-                    <td>3,761,000円+(⑦16歳未満の扶養親族の人数+⑧16～18歳の扶養親族の人数+⑨特定扶養親族の人数)×630,000+(⑩老人扶養親族(同居老親等以外)の人数+⑪老人扶養親族(同居老親等)の人数)×480,000円+⑫一般の扶養親族の人数×380,000円に、⑥配偶者の状況が一般の控除対象であれば380,000円、老人控除対象であれば480,000円を加算した金額</td>
+                    <td>3,858,000円+(⑦16歳未満の扶養親族の人数+⑧16～18歳の扶養親族の人数+⑨特定扶養親族の人数)×630,000+(⑩老人扶養親族(同居老親等以外)の人数+⑪老人扶養親族(同居老親等)の人数)×480,000円+⑫一般の扶養親族の人数×380,000円に、⑥配偶者の状況が一般の控除対象であれば380,000円、老人控除対象であれば480,000円を加算した金額</td>
                 </tr>
                 <tr>
                     <td>L</td>
                     <td>全額支給停止の基準額</td>
-                    <td>{(4794000 + kasan).toLocaleString()}</td>
+                    <td>{(4918000 + kasan).toLocaleString()}</td>
                     <td></td>
-                    <td>4,794,000円+上段と同じ加算額</td>
+                    <td>4,918,000円+上段と同じ加算額</td>
                 </tr>
                 </tbody>
             </Table>
@@ -658,12 +658,12 @@ const App: React.FC = () => {
             <div >
                 {/* @ts-ignore */}
                 <p align={"center"} className={"h3 md-3"}>判定結果：{
-                    (shotoku - koujo) > (4794000 + kasan)
-                        ? "全額支給停止(超過額：" + ((shotoku - koujo) - (4794000 + kasan)).toLocaleString() + "円"
+                    (shotoku - koujo) > (4918000 + kasan)
+                        ? "全額支給停止(超過額：" + ((shotoku - koujo) - (4918000 + kasan)).toLocaleString() + "円"
                         : (
-                            (shotoku - koujo) > (3761000 + kasan)
-                                ? "半額支給停止(超過額：" + ((shotoku - koujo) - (3761000 + kasan)).toLocaleString() + "円、全額支給停止まで:" + ((4794000 + kasan) - (shotoku - koujo)).toLocaleString() + "円)"
-                                : "支給停止なし(半額支給停止まで：" + ((3761000 + kasan) - (shotoku - koujo)).toLocaleString() + "円)"
+                            (shotoku - koujo) > (3858000 + kasan)
+                                ? "半額支給停止(超過額：" + ((shotoku - koujo) - (3858000 + kasan)).toLocaleString() + "円、全額支給停止まで:" + ((4918000 + kasan) - (shotoku - koujo)).toLocaleString() + "円)"
+                                : "支給停止なし(半額支給停止まで：" + ((3858000 + kasan) - (shotoku - koujo)).toLocaleString() + "円)"
                         )
                 }
                 </p>
